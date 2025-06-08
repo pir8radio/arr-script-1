@@ -7,6 +7,14 @@ RADARR_URL = "http://localhost:7878/api/v3"
 SONARR_URL = "http://localhost:8989/api/v3"
 ERROR_STATUSES = {"error", "warning", "unknownError", "unknownWarning"}
 
+# Define log file
+log_file = "log.txt"
+
+# Function to append failed items to log
+def log_failure(item, type):
+    with open(log_file, "a") as log:
+        log.write(f"{type} Failure: {item['title']} (ID: {item.get('movieId') or item.get('seriesId')})\n")
+
 # Function to get queue status from Radarr
 def get_radarr_queue():
     response = requests.get(f"{RADARR_URL}/queue", headers={"X-Api-Key": RADARR_API_KEY})
@@ -20,6 +28,7 @@ def get_sonarr_queue():
 # Function to handle failed items in Radarr
 def handle_radarr_failure(item):
     print(f"Handling failure for {item['title']} (Movie ID: {item['movieId']})")
+    log_failure(item, "Radarr")
 
     response = requests.delete(
         f"{RADARR_URL}/queue/{item['id']}?removeFromClient=false&blocklist=true&skipRedownload=false&changeCategory=false",
@@ -27,17 +36,16 @@ def handle_radarr_failure(item):
     )
     print(f"Queue removal response: {response.status_code}, {response.text}")
 
-
 # Function to handle failed items in Sonarr
 def handle_sonarr_failure(item):
     print(f"Handling failure for {item['title']} (Series ID: {item['seriesId']})")
+    log_failure(item, "Sonarr")
 
     response = requests.delete(
         f"{SONARR_URL}/queue/{item['id']}?removeFromClient=false&blocklist=true&skipRedownload=false&changeCategory=false",
         headers={"X-Api-Key": SONARR_API_KEY}
     )
     print(f"Queue removal response: {response.status_code}, {response.text}")
-
 
 # Process Radarr queue
 radarr_failed = False
@@ -56,3 +64,6 @@ for item in get_sonarr_queue():
 # If no failures were handled, print confirmation
 if not radarr_failed and not sonarr_failed:
     print("Everything looks good! Nothing to see here.")
+else:
+    print("Failed items logged to file.")
+    
