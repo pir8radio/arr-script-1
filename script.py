@@ -1,6 +1,6 @@
 import requests
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Configuration
 RADARR_API_KEY = "your_radarr_api_key"
@@ -43,22 +43,22 @@ def is_stale_completed(item):
     if not completed_time_str:
         return False
     try:
-        completed_time = datetime.strptime(completed_time_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-        return datetime.utcnow() - completed_time > timedelta(hours=STALE_THRESHOLD_HOURS)
+        completed_time = datetime.strptime(completed_time_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc) - completed_time > timedelta(hours=STALE_THRESHOLD_HOURS)
     except Exception as e:
         print(f"Time parse error: {e}")
         return False
 
 # Function to check if item is stuck in warning
 def is_stuck_warning(item):
-    if item.get('trackedDownloadStatus') != "warning":
+    if item.get('status') != "warning":
         return False
-    warning_time_str = item.get('estimatedCompletionTime')
+    warning_time_str = item.get('added')
     if not warning_time_str:
         return False
     try:
-        warning_time = datetime.strptime(warning_time_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-        return datetime.utcnow() - warning_time > timedelta(hours=WARNING_THRESHOLD_HOURS)
+        warning_time = datetime.strptime(warning_time_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc) - warning_time > timedelta(hours=WARNING_THRESHOLD_HOURS)
     except Exception as e:
         print(f"Time parse error (warning): {e}")
         return False
@@ -67,7 +67,7 @@ def is_stuck_warning(item):
 radarr_failed = False
 for item in get_queue(RADARR_URL, RADARR_API_KEY):
     if item.get('status') == "completed":
-        if item.get('trackedDownloadStatus') in ERROR_STATUSES:
+        if item.get('status') in ERROR_STATUSES:
             radarr_failed = True
             handle_failure(item, "Radarr", RADARR_URL, RADARR_API_KEY)
         elif is_stale_completed(item):
@@ -81,7 +81,7 @@ for item in get_queue(RADARR_URL, RADARR_API_KEY):
 sonarr_failed = False
 for item in get_queue(SONARR_URL, SONARR_API_KEY):
     if item.get('status') == "completed":
-        if item.get('trackedDownloadStatus') in ERROR_STATUSES:
+        if item.get('status') in ERROR_STATUSES:
             sonarr_failed = True
             handle_failure(item, "Sonarr", SONARR_URL, SONARR_API_KEY)
         elif is_stale_completed(item):
