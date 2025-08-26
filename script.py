@@ -7,7 +7,7 @@ RADARR_API_KEY = "your_radarr_api_key"
 SONARR_API_KEY = "your_sonarr_api_key"
 RADARR_URL = "http://localhost:7878/api/v3"
 SONARR_URL = "http://localhost:8989/api/v3"
-ERROR_STATUSES = {"error", "warning", "unknownError", "unknownWarning"}
+ERROR_STATUSES = {"warning", "unknown", "failed"}
 STALE_THRESHOLD_HOURS = 12
 WARNING_THRESHOLD_HOURS = 48
 
