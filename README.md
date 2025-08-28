@@ -52,13 +52,15 @@ Everything looks good! Nothing to see here.
 ```
 
 ## Logic Overview
+* If status is at this state for configured hours then:
 
-| Status            | Action in Radarr/Sonarr | Action in Torrent Client |
-|-------------------|--------------------------|---------------------------|
-| Completed         | ✅ Removed from queue     | ❌ Left in client         |
-| Stale Completed   | ✅ Removed from queue     | ❌ Left in client         |
-| Stuck/Warning     | ✅ Removed from queue     | ✅ Removed from client    |
+|     Status         | Action in Radarr/Sonarr | Action in Torrent Client |
+|--------------------|--------------------------|---------------------------|
+| Completed          | ✅ Removed from queue     | ❌ Left in client         |
+| Stale Completed    | ✅ Removed from queue     | ❌ Left in client         |
+| Warning/Queued     | ✅ Removed from queue     | ✅ Removed from client    |
 
+* Add to blocklist and rescan after all.
 ---
 
 ## License
