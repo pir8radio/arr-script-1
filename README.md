@@ -24,12 +24,15 @@ This helps automate the management of movie and TV show downloads, improving rel
 
 ## Configuration
 
-1. **Edit the script** to add your Radarr and Sonarr API keys:
+1. **Edit the script** to insert your Radarr and Sonarr API keys, and define how long you'd like to allow WARNING (i.e., stalled) or STALE (completed but unprocessed) torrents to linger before cleanup.
    ```python
    RADARR_API_KEY = "your_radarr_api_key"
    SONARR_API_KEY = "your_sonarr_api_key"
    RADARR_URL = "http://localhost:7878/api/v3"
    SONARR_URL = "http://localhost:8989/api/v3"
+   ...
+   STALE_THRESHOLD_HOURS = 12
+   WARNING_THRESHOLD_HOURS = 48
    ```
 
 2. **Run the script**:
