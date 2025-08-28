@@ -8,7 +8,7 @@ This Python script interacts with the **Radarr** and **Sonarr** APIs to:
 - **Trigger a re-search** for alternative releases.
 - **Ensure items are correctly removed from the queue** without affecting the download client.
 
-This helps automate the management of movie and TV show downloads, improving reliability.
+This helps automate the management of movie and TV show downloads, improving reliability, without having to do a bunch of manual editing.
 
 ## Features
 ✅ Scans **Radarr & Sonarr** queues for completed downloads with errors.  
