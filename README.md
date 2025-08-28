@@ -11,7 +11,7 @@ This Python script interacts with the **Radarr** and **Sonarr** APIs to:
 This helps automate the management of movie and TV show downloads, improving reliability, without having to do a bunch of manual editing.
 
 ## Features
-✅ Scans **Radarr & Sonarr** queues for completed downloads with errors.  
+✅ Scans **Radarr & Sonarr** queues for completed downloads with errors or downloads that are hung up.  
 ✅ Removes failed downloads while **keeping the original category intact**.  
 ✅ Adds releases to the **blocklist** to prevent repeat failures.  
 ✅ Allows Radarr & Sonarr to **re-search** for alternate sources.    
