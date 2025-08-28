@@ -24,7 +24,7 @@ def get_queue(url, api_key):
     response = requests.get(f"{url}/queue/details", headers={"X-Api-Key": api_key})
     return response.json()
 
-# Function to handle failed items
+# Function to handle failed complete items
 def handle_failure(item, type, url, api_key, reason="Failure"):
     print(f"Handling {reason.lower()} for {item['title']} (ID: {item.get('movieId') or item.get('seriesId')})")
     log_failure(item, type, reason)
@@ -34,7 +34,18 @@ def handle_failure(item, type, url, api_key, reason="Failure"):
         headers={"X-Api-Key": api_key}
     )
     print(f"Queue removal response: {response.status_code}, {response.text}")
+    
+# Function to handle stuck or partial items
+def handle_failure_stuck(item, type, url, api_key, reason="Failure"):
+    print(f"Handling {reason.lower()} for {item['title']} (ID: {item.get('movieId') or item.get('seriesId')})")
+    log_failure(item, type, reason)
 
+    response = requests.delete(
+        f"{url}/queue/{item['id']}?removeFromClient=true&blocklist=true&skipRedownload=false&changeCategory=false",
+        headers={"X-Api-Key": api_key}
+    )
+    print(f"Queue removal response: {response.status_code}, {response.text}")
+    
 # Function to check if item is stale
 def is_stale_completed(item):
     if item.get('status') != "completed":
@@ -75,7 +86,7 @@ for item in get_queue(RADARR_URL, RADARR_API_KEY):
             handle_failure(item, "Radarr", RADARR_URL, RADARR_API_KEY, reason="Stale Completed")
     elif is_stuck_warning(item):
         radarr_failed = True
-        handle_failure(item, "Radarr", RADARR_URL, RADARR_API_KEY, reason="Stuck Warning")
+        handle_failure_stuck(item, "Radarr", RADARR_URL, RADARR_API_KEY, reason="Stuck Warning")
 
 # Process Sonarr queue
 sonarr_failed = False
@@ -89,7 +100,7 @@ for item in get_queue(SONARR_URL, SONARR_API_KEY):
             handle_failure(item, "Sonarr", SONARR_URL, SONARR_API_KEY, reason="Stale Completed")
     elif is_stuck_warning(item):
         sonarr_failed = True
-        handle_failure(item, "Sonarr", SONARR_URL, SONARR_API_KEY, reason="Stuck Warning")
+        handle_failure_stuck(item, "Sonarr", SONARR_URL, SONARR_API_KEY, reason="Stuck Warning")
 
 # Final status
 if not radarr_failed and not sonarr_failed:
