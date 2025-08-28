@@ -17,7 +17,7 @@ log_file = "log.txt"
 # Function to append failed items to log
 def log_failure(item, type, reason="Failure"):
     with open(log_file, "a") as log:
-        log.write(f"{type} {reason}: {item['title']} (ID: {item.get('movieId') or item.get('seriesId')})\n")
+        log.write(f"{type} {reason} was in state {item.get('status', 'unknown')}: {item['title']} (ID: {item.get('movieId') or item.get('seriesId')})\n")
 
 # Function to get queue status
 def get_queue(url, api_key):
@@ -60,9 +60,9 @@ def is_stale_completed(item):
         print(f"Time parse error: {e}")
         return False
 
-# Function to check if item is stuck in warning
+# Function to check if item is stuck in warning or queued
 def is_stuck_warning(item):
-    if item.get('status') != "warning":
+    if item.get('status') not in ("warning", "queued"):
         return False
     warning_time_str = item.get('added')
     if not warning_time_str:
