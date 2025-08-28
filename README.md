@@ -51,5 +51,15 @@ If no errors are found, the script prints:
 Everything looks good! Nothing to see here.
 ```
 
+## Logic Overview
+
+| Status            | Action in Radarr/Sonarr | Action in Torrent Client |
+|-------------------|--------------------------|---------------------------|
+| Completed         | ✅ Removed from queue     | ❌ Left in client         |
+| Stale Completed   | ✅ Removed from queue     | ❌ Left in client         |
+| Stuck/Warning     | ✅ Removed from queue     | ✅ Removed from client    |
+
+---
+
 ## License
 MIT License
