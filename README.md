@@ -61,6 +61,9 @@ Everything looks good! Nothing to see here.
 | Warning/Queued     | ✅ Removed from queue     | ✅ Removed from client    |
 
 * Add to blocklist and rescan after all.
+* Completed items are left in the torrent client as not to affect your ratio even if you don't use the files.
+* Unfinished downloads are removed from both the arr app and torrent client.
+
 ---
 
 ## License
