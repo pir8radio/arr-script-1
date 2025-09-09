@@ -8,7 +8,6 @@ SONARR_API_KEY = "your_sonarr_api_key"
 RADARR_URL = "http://localhost:7878/api/v3"
 SONARR_URL = "http://localhost:8989/api/v3"
 ERROR_STATUSES = {"warning", "unknown", "failed"}
-STALE_THRESHOLD_HOURS = 12
 WARNING_THRESHOLD_HOURS = 48
 
 # Define log file
@@ -46,19 +45,9 @@ def handle_failure_stuck(item, type, url, api_key, reason="Failure"):
     )
     print(f"Queue removal response: {response.status_code}, {response.text}")
     
-# Function to check if item is stale
+# Function to check if item is completed and has a warning status
 def is_stale_completed(item):
-    if item.get('status') != "completed":
-        return False
-    completed_time_str = item.get('estimatedCompletionTime')
-    if not completed_time_str:
-        return False
-    try:
-        completed_time = datetime.strptime(completed_time_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
-        return datetime.now(timezone.utc) - completed_time > timedelta(hours=STALE_THRESHOLD_HOURS)
-    except Exception as e:
-        print(f"Time parse error: {e}")
-        return False
+    return item.get('status') == "completed" and item.get('trackedDownloadStatus') == "warning"
 
 # Function to check if item is stuck in warning or queued
 def is_stuck_warning(item):
