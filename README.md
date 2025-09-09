@@ -31,7 +31,6 @@ This helps automate the management of movie and TV show downloads, improving rel
    RADARR_URL = "http://localhost:7878/api/v3"
    SONARR_URL = "http://localhost:8989/api/v3"
    ...
-   STALE_THRESHOLD_HOURS = 12
    WARNING_THRESHOLD_HOURS = 48
    ```
 
