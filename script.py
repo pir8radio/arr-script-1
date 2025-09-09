@@ -8,7 +8,7 @@ SONARR_API_KEY = "your_sonarr_api_key"
 RADARR_URL = "http://localhost:7878/api/v3"
 SONARR_URL = "http://localhost:8989/api/v3"
 ERROR_STATUSES = {"warning", "unknown", "failed"}
-WARNING_THRESHOLD_HOURS = 48
+WARNING_THRESHOLD_HOURS = 72 # How many hours since first requested before whacking warning downloads. Good to make this a few days for slow downloads with few seeders.
 
 # Define log file
 log_file = "log.txt"
@@ -16,7 +16,7 @@ log_file = "log.txt"
 # Function to append failed items to log
 def log_failure(item, type, reason="Failure"):
     with open(log_file, "a") as log:
-        log.write(f"{type} {reason} was in state {item.get('status', 'unknown')}: {item['title']} (ID: {item.get('movieId') or item.get('seriesId')})\n")
+        log.write(f"{type} {reason}, was in state {item.get('status', 'unknown')}: {item['title']} (ID: {item.get('movieId') or item.get('seriesId')})\n")
 
 # Function to get queue status
 def get_queue(url, api_key):
@@ -96,4 +96,3 @@ if not radarr_failed and not sonarr_failed:
     print("Everything looks good! Nothing to see here.")
 else:
     print("Failed items logged to file.")
-    
