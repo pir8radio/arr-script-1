@@ -72,10 +72,10 @@ for item in get_queue(RADARR_URL, RADARR_API_KEY):
             handle_failure(item, "Radarr", RADARR_URL, RADARR_API_KEY)
         elif is_stale_completed(item):
             radarr_failed = True
-            handle_failure(item, "Radarr", RADARR_URL, RADARR_API_KEY, reason="Stale Completed")
+            handle_failure(item, "Radarr", RADARR_URL, RADARR_API_KEY, reason="Stale")
     elif is_stuck_warning(item):
         radarr_failed = True
-        handle_failure_stuck(item, "Radarr", RADARR_URL, RADARR_API_KEY, reason="Stuck Warning")
+        handle_failure_stuck(item, "Radarr", RADARR_URL, RADARR_API_KEY, reason="Stuck")
 
 # Process Sonarr queue
 sonarr_failed = False
@@ -86,13 +86,14 @@ for item in get_queue(SONARR_URL, SONARR_API_KEY):
             handle_failure(item, "Sonarr", SONARR_URL, SONARR_API_KEY)
         elif is_stale_completed(item):
             sonarr_failed = True
-            handle_failure(item, "Sonarr", SONARR_URL, SONARR_API_KEY, reason="Stale Completed")
+            handle_failure(item, "Sonarr", SONARR_URL, SONARR_API_KEY, reason="Stale")
     elif is_stuck_warning(item):
         sonarr_failed = True
-        handle_failure_stuck(item, "Sonarr", SONARR_URL, SONARR_API_KEY, reason="Stuck Warning")
+        handle_failure_stuck(item, "Sonarr", SONARR_URL, SONARR_API_KEY, reason="Stuck")
 
 # Final status
 if not radarr_failed and not sonarr_failed:
     print("Everything looks good! Nothing to see here.")
 else:
     print("Failed items logged to file.")
+    
